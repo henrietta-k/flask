@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, request, render_template
 from utils import *
 
 app = Flask(__name__)
@@ -11,22 +11,22 @@ def index():
 #User inputs their material topics
 @app.route('/topics')
 def topics():
-    e = None
-    s = None
-    g = None
     return render_template("topics.html")
 
 #First question to ask the user
-@app.route("/question-1")
+@app.route("/question-1", methods=["POST"])
 def question_1():
-    topics = ["1", "2", "3"]
-    return render_template("question-1.html", topics=topics)
+    environment = request.form.get("environment")
+    social = request.form.get("social")
+    governance = request.form.get("governance")
+    return render_template("question-1.html", environment=environment, social=social, governance=governance)
 
 #Results of program shown to the user
 @app.route("/results")
 def results():
     topics = ["1", "2", "3"]
     return render_template("results.html", topics=topics)
+
 
 #THESE ROUTES AREN'T CURRENTLY IN USE
 @app.route('/about')
