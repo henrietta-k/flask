@@ -13,55 +13,54 @@
 
       <!--Answering the question-->
     <div class="card-group">
+        <form method="POST" action="/">
 
         <!--Environmental topics-->
         <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Environment</h5>
-            {% for topic in environment %}
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-              <label class="form-check-label" for="defaultCheck1">
-                {{ topic }}
-              </label>
+            <div class="card-body">
+              <h5 class="card-title">Environment</h5>
+              {% for topic in environment %}
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="environment">
+                <label class="form-check-label" for="defaultCheck1">
+                  {{ topic }}
+                </label>
+              </div>
+              {% endfor %}
             </div>
-            {% endfor %}
-            </form>
           </div>
-        </div>
 
-        <!--Social topics-->
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Social</h5>
-            {% for topic in social %}
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-              <label class="form-check-label" for="defaultCheck1">
-                {{ topic }}
-              </label>
+          <!--Social topics-->
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Social</h5>
+              {% for topic in social %}
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="social">
+                <label class="form-check-label" for="defaultCheck1">
+                  {{ topic }}
+                </label>
+              </div>
+              {% endfor %}
             </div>
-            {% endfor %}
-            </form>
           </div>
-        </div>
 
-        <!--Governance topics-->
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Governance</h5>
-            {% for topic in governance %}
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-              <label class="form-check-label" for="defaultCheck1">
-                {{ topic }}
-              </label>
+          <!--Governance topics-->
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Governance</h5>
+              {% for topic in governance %}
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="governance">
+                <label class="form-check-label" for="defaultCheck1">
+                  {{ topic }}
+                </label>
+              </div>
+              {% endfor %}
             </div>
-            {% endfor %}
-            </form>
           </div>
         </div>
-      </div>
+        </form>
 
       <!--Move on to next question-->
       <div>

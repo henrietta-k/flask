@@ -21,6 +21,28 @@ def question_1():
     governance = request.form.get("governance")
     return render_template("question-1.html", environment=environment, social=social, governance=governance)
 
+#DELETE THIS LATER
+@app.route("/question", methods=["POST"])
+def question_2():
+    environment = request.form.get("environment")
+    social = request.form.get("social")
+    governance = request.form.get("governance")
+    return render_template("question.html", environment=environment, social=social, governance=governance)
+
+#Current question number
+question_id = 2
+
+#For each remaining question
+@app.route('/#question/<int:id>')
+def question(e, s, g, next, methods=["POST"]): #q, topics, next=True figure out how to use inputs later
+    if questions_ext:
+        next=True
+    return render_template("question.html", environment=e, social=s, governance=g, next=next)
+
+#######################
+#GREEDY ALGORITHM HERE#
+#######################
+
 #Results of program shown to the user
 @app.route("/results")
 def results():
@@ -34,11 +56,3 @@ def about():
     id = "Materiality Assesment"
     names = ["1", "2", "3"]
     return render_template("about.html", title=id, names=names)
-
-#Use an if statement in the html question files themselves
-@app.route('/') #question/<int:id>'
-def question(): #q, topics, next=True figure out how to use inputs later
-    topics = ["1", "2", "3"]
-    q = "Hello"
-    return render_template("question.html", question=q, topics=topics, next=next)
-
