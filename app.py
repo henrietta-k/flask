@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for
 from utils import *
 
 app = Flask(__name__)
@@ -8,7 +8,6 @@ app = Flask(__name__)
 def index():
     return render_template("start.html")
 
-#User inputs their material topics
 @app.route('/topics')
 def topics():
     return render_template("topics.html")
@@ -22,11 +21,11 @@ def question_1():
     return render_template("question-1.html", environment=environment, social=social, governance=governance)
 
 #DELETE THIS LATER
-@app.route("/question", methods=["POST"])
+@app.route("/question", methods=["POST", "GET"])
 def question_2():
-    environment = request.form.get("environment")
-    social = request.form.get("social")
-    governance = request.form.get("governance")
+    #environment = request.form.get("environment")
+    #social = request.form.get("social")
+    #governance = request.form.get("governance")
     return render_template("question.html", environment=environment, social=social, governance=governance)
 
 #Current question number
@@ -34,10 +33,10 @@ question_id = 2
 
 #For each remaining question
 @app.route('/#question/<int:id>')
-def question(e, s, g, next, methods=["POST"]): #q, topics, next=True figure out how to use inputs later
+def question(e, s, g, next, methods=["POST", "GET"]): #q, topics, next=True figure out how to use inputs later
     if questions_ext:
         next=True
-    return render_template("question.html", environment=e, social=s, governance=g, next=next)
+    return render_template("question-<int>.html", environment=e, social=s, governance=g, next=next) #Figure out how to fix this
 
 #######################
 #GREEDY ALGORITHM HERE#
