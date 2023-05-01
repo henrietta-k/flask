@@ -13,7 +13,7 @@
 
       <!--Answering the question-->
     <div class="card-group">
-        <form action="/question-2" method="POST">
+        <form action="/question/2" method="POST">
 
         <!--Environmental topics-->
         <div class="card">
@@ -21,7 +21,7 @@
               <h5 class="card-title">Environment</h5>
               {% for topic in environment %}
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="environment">
+                <input class="form-check-input" type="checkbox" value={{topic}} id="defaultCheck1" name="e">
                 <label class="form-check-label" for="defaultCheck1">
                   {{ topic }}
                 </label>
@@ -36,7 +36,7 @@
               <h5 class="card-title">Social</h5>
               {% for topic in social %}
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="social">
+                <input class="form-check-input" type="checkbox" value={{topic}} id="defaultCheck1" name="s">
                 <label class="form-check-label" for="defaultCheck1">
                   {{ topic }}
                 </label>
@@ -51,7 +51,7 @@
               <h5 class="card-title">Governance</h5>
               {% for topic in governance %}
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="governance">
+                <input class="form-check-input" type="checkbox" value={{topic}} id="defaultCheck1" name="g">
                 <label class="form-check-label" for="defaultCheck1">
                   {{ topic }}
                 </label>
