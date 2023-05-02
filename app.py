@@ -14,6 +14,10 @@ def index():
 def topics():
     return render_template("topics.html")
 
+#Creating the Tracker object
+ext_tracker = Tracker()
+int_tracker = Tracker(False)
+
 #For each subsequent question
 #Next step: change each column to 3 checkboxes each with low, medium, high
 @app.route('/question/<int:id>', methods=["POST"])
@@ -25,6 +29,7 @@ def question(id):
             e = request.form.get("e")
             s = request.form.get("s")
             g = request.form.get("g")
+            e, s, g = tracker.initialize(e, s, g)
         else:
             e = request.form.getlist("e")
             s = request.form.getlist("s")

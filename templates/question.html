@@ -13,11 +13,7 @@
 
       <!--Answering the question-->
     <div class="card-group">
-        {% if next %}
-            <form action="/question/{{next}}" method="POST">
-        { % else % }
-            <form action="#" method="POST"></form>
-        { % endif % }
+        <form action="/question/{{next}}" method="POST">
 
         <!--Environmental topics-->
         <div class="card">

@@ -3,7 +3,7 @@ Contains questions that will be asked
 """
 
 questions_ext = [("Scale of Negative Impact", "How grave is its negative impact?"),
-                 ("Scope of Negative Impact", "How widespread is the impact? (Eg. the number of individuals affected or the extend of environmental damage.)"),
+                 ("Scope of Negative Impact", "How widespread is the impact? \n(Eg. the number of individuals affected or the extend of environmental damage.)"),
                  ("Irremediable Character", "How hard is it to counteract or make good the resulting harm?"),
                  ("Human Rights", "How severe is the potential negative human rights impacts?"),
                  ("Human Rights", "How likely is the potential negative human rights impact?"),
