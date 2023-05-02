@@ -14,36 +14,42 @@ def index():
 def topics():
     return render_template("topics.html")
 
-#Creating the Tracker object
+#Creating Tracker objects
+#TODO: reuse the same pages but with different questions to make these two trackers
 ext_tracker = Tracker()
 int_tracker = Tracker(False)
+
 
 #For each subsequent question
 #Next step: change each column to 3 checkboxes each with low, medium, high
 @app.route('/question/<int:id>', methods=["POST"])
 def question(id):
-    if questions_left():
-        title, question = questions_left()
+    #Figure out how to turn this into internal and external tracker
+    if ext_tracker.next_question():
         if id == 1:
-            #Remember to split this by "," later on
             e = request.form.get("e")
             s = request.form.get("s")
             g = request.form.get("g")
-            e, s, g = tracker.initialize(e, s, g)
+            e, s, g = ext_tracker.initialize(e, s, g) #Figure out how to differentiate these two trackers
+            id += 1
+            title, question = ext_tracker.next_question()
+            return render_template("question.html", environment=e, social=s, governance=g, next=id, question=question, title=title)
         else:
             e = request.form.getlist("e")
             s = request.form.getlist("s")
             g = request.form.getlist("g")
+            print("E: ", e)
+            print("S: ", s)
+            print("G: ", g)
+            id += 1
 
-        id += 1
-        #KEEP WORKING ON FIGURING OUT THE NEXT PART OF THIS PROGRAM --> how to know what to input for next
-
-        #Update topics + minheap
-        #Update the questions list
-        return render_template("question.html", environment=e, social=s, governance=g, next=id, question=question, title=title)
-    else:
+            #TODO: the questions are currently not being moved forward (stuck on Q.1)
+            #ext_tracker.update()
+            title, question = ext_tracker.next_question()
+            return render_template("question.html", environment=e, social=s, governance=g, next=id, question=question, title=title)
+    #else:
         #Keep working on this part here
-        return render_template("results.html")
+        #return render_template("results.html")
 
 #######################
 #GREEDY ALGORITHM HERE#
