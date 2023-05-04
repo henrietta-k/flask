@@ -39,7 +39,7 @@ class Tracker:
     def __init__(self, ext=True):
         """
         """
-        #Topic names with the Topics themselves
+        #Used to get the Topic object using its str name
         self.e = {}
         self.s = {}
         self.g = {}
@@ -89,17 +89,61 @@ class Tracker:
         s = s.split(",")
         g = g.split(",")
 
-        for topic in e:
-            self.e[topic.strip()] = Topic("E", topic.strip())
-        for topic in s:
-            self.s[topic.strip()] = Topic("S", topic.strip())
-        for topic in g:
-            self.g[topic.strip()] = Topic("G", topic.strip())
+        categories = [(e, self.e, self.e_curr_heap, "E"),
+                      (s, self.s, self.s_curr_heap, "S"),
+                      (g, self.g, self.g_curr_heap, "G")]
 
+        for category, esg_dict, esg_heap, esg_str in categories:
+            for topic in category:
+                topic = topic.strip()
+                esg_dict[topic] = Topic(esg_str, topic)
+                #Topic needs to be a str for this function to work
+                heapq.heappush(esg_heap, (0, topic))
+
+        #Heap looks like this:
+        #Curr heap:  [(0, 'a'), (0, 'b'), (0, 'c')]
         return (list(self.e.keys()), list(self.s.keys()), list(self.g.keys()))
 
 
-    def update(self, e, s, g, ext=True):
+    def update_heap(self):
+        """
+        Remakes the heap for self.e_curr_heap, self.s_curr_heap,
+        self.g_curr_heap using updated values.
+        """
+
+        new_heap = []
+        heaps = [(self.e, self.e_curr_heap, "E"),
+                (self.s, self.s_curr_heap, "S"),
+                (self.g, self.g_curr_heap, "G")]
+
+        #TODO: tidy the function here --> fix code quality
+        #Remaking the heap with the new values
+        if self.ext:
+            for esg_dict, heap, char in heaps:
+                new_heap = []
+                for _, topic in heap:
+                    priority = esg_dict[topic].external
+                    heapq.heappush(new_heap, (priority, topic))
+                if char == "E":
+                    self.e_curr_heap = new_heap
+                elif char == "S":
+                    self.s_curr_heap = new_heap
+                else:
+                    self.g_curr_heap = new_heap
+                new_heap = []
+
+        #TODO: paste the code from above and tweak it
+        else:
+            for esg_dict, heap in heaps:
+                new_heap = []
+                for _, topic in heap:
+                    priority = esg_dict[topic].internal
+                    heapq.heappush(new_heap, (priority, topic))
+                heap = new_heap
+                new_heap = []
+
+
+    def update(self, e, s, g):
         """
         Performs all the necessary updates to the tracker after every question
         the user is asked.
@@ -113,15 +157,37 @@ class Tracker:
         no more questions to ask
         """
 
-        self.update_topics(e, s, g, ext)
-        self.remove_topics(ext)
+        self.update_topics(e, s, g)
+        self.remove_topics()
         if self.next_question():
             self.curr_id += 1
             return self.next_question()
         return None
 
 
-    def update_topics(self, e, s, g, ext=True):
+    def get_topics(self):
+        """
+        Returns the questions that are still being asked about in the program.
+
+        Returns(tuple of lst of str): returns (E, S, G) topics that still need
+            to be asked about.
+        """
+
+        e = []
+        s = []
+        g = []
+
+        categories = [(e, self.e_curr_heap),
+                      (s, self.s_curr_heap),
+                      (g, self.g_curr_heap)]
+
+        for result, category in categories:
+            for _, topic in category:
+                result.append(topic)
+        return (e, s, g)
+
+
+    def update_topics(self, e, s, g):
         """
         Updates the attributes for each Topic based on the user input. Adds 1
         to the Topic's score if a user has selected it for either external
@@ -135,60 +201,68 @@ class Tracker:
 
         Returns: (does not return a value)
         """
-        #TODO: Use for loops to shorten the code here
+
+        inputs = [(self.e, e),
+                (self.s, s),
+                (self.g, g)]
 
         #When answering questions about the external impact
-        #TODO: update the current heap as well OR do this in the remove_topics function
-        if ext:
-            for topic in e:
-                self.e[topic].external += 1
-            for topic in s:
-                self.s[topic].external += 1
-            for topic in g:
-                self.g[topic].external += 1
+        if self.ext:
+            for esg_dict, category in inputs:
+                for topic in category:
+                    esg_dict[topic].external += 1
+                    #print("Topic name: ", topic, "Score: ", esg_dict[topic].external)
+            self.update_heap()
+            #print("E heap: ", self.e_curr_heap, "S: ", self.s_curr_heap, "G: ", self.g_curr_heap)
 
         #When answering questions about the internal impact
         else:
-            for topic in e:
-                self.e[topic].internal += 1
-            for topic in s:
-                self.s[topic].internal += 1
-            for topic in g:
-                self.g[topic].internal += 1
+            for esg_dict, category in inputs:
+                for topic in category:
+                    esg_dict[topic].internal += 1
+            self.update_heap()
 
 
-    def remove_topics(self, ext):
+    def remove_topics(self):
         """
         Removes topics based on a bound as user answers questions about them.
 
-        Inputs:
-            ext(bool): checking for external/ internal score
-
         Returns():
         """
-        #NOTE: remove topics if the difference between one topic and the one previosu to it is larger than the number of questions left
-        #8 questions to ask total for external
-        #Either use mergesort for this or use something in the heap module
 
-        bound = self.bounds[self.curr_id]
+        #TODO: see if there is an algorithm that can make this work (right now
+        # it's not really working)
 
-        if ext:
-            for category, heap in self.categories:
-                for name, topic in category.items():
-                    if topic.external <= bound:
-                        #Topic score is too low
-                        heap.heappush(topic.external, topic)
-                        del category[name]
-        else:
-            for category, heap in self.categories:
-                for name, topic in category.items():
-                    if topic.internal <= bound:
-                        heap.heappush(topic.internal, topic)
-                        del category[name]
+
+        #Total external questions: 8
+        questions_remaining = len(self.questions) - self.curr_id
+
+        #Topics removed if the difference between one topic's score and the
+        #score of the one before it is larger than the number of questions
+        #remaining
+        heaps = [(self.e_curr_heap, self.e_heap, self.e),
+                 (self.s_curr_heap, self.s_heap, self.s),
+                 (self.g_curr_heap, self.g_heap, self.g)]
+
+        to_delete = [] #TODO: figure out whether I need this or not
+
+        for curr_heap, heap, category in heaps:
+            for i, topic_tuple in enumerate(curr_heap):
+                if i < len(curr_heap) - 1: #figur ethis out
+                    cost_prev, prev = topic_tuple
+                    cost_next, next = curr_heap[i+1]
+                    if cost_next - cost_prev > questions_remaining:
+                        _, delete_topic = curr_heap.pop(i)
+                        delete_topic = category[delete_topic]
+                        if self.ext:
+                            heapq.heappush(heap, (delete_topic.external, delete_topic))
+                        else:
+                            heapq.heappush(heap, (delete_topic.internal, delete_topic))
 
 
     def no_questions_remaining(self):
         """
+        #TODO: is this method actually used or not
         Pushes all material topics into the heap when there are no more
         questions left to ask.
 
@@ -209,6 +283,9 @@ class Tracker:
 
     def next_question(self) -> tuple:
         """
+        NOTE: heaps look like this
+        E heap:  [(2, 'b'), (3, 'a'), (3, 'c')] S:  [(2, 'e'), (3, 'd'), (3, 'f')] G:  [(2, 'h'), (3, 'g'), (2, 'i')]
+
         Checks to see if any more questions need to be asked and returns a question
         if there are any remaining. Returns False otherwise.
 
@@ -224,25 +301,29 @@ class Tracker:
         Returns(tuple of str or False): tuple of the question title and the
             question itself if there are questions remaining. False otherwise.
         """
-        if questions_ext and not self.terminate():
+        #TODO: write a pytest for this function
+        questions_remaining = len(self.questions) - self.curr_id
+
+        #Terminate the program if the highest scores in every current heap
+        #are greater than the number of questions remaining
+        max_e = self.e_curr_heap[-1][0]
+        max_s = self.s_curr_heap[-1][0]
+        max_g = self.g_curr_heap[-1][0]
+
+        min_diff = min(abs(max_e - max_s),
+                       abs(max_e - max_g), abs(max_s - max_g))
+
+        if min_diff > questions_remaining:
+            return False
+
+        #Only one topic left in E, S, G
+        if (self.e_curr_heap <= 1 and self.s_curr_heap <= 1
+                and self.g_curr_heap <= 1):
+            return False
+
+        if questions_remaining > 0  and not self.terminate():
             question = self.questions[self.curr_id]
             return question
-        return False
-
-
-    def get_topic(self):
-        """
-        Returns a list of remaining topics as a list of str.
-
-        Returns(tuple of lst of str): the topics that still need to be asked
-        about
-        """
-
-        e = list(self.e.keys())
-        s = list(self.s.keys())
-        g = list(self.g.keys())
-
-        return (e, s, g)
 
 
     def terminate(self):
@@ -255,12 +336,21 @@ class Tracker:
         #TODO
         return False
 
-    def final(self):
-        """
-        Uses dynamic programming to optimize the solution for both internal
-        and external topics.
-        """
-        pass
+def merge_solutions(self, int_tracker, ext_tracker):
+    """
+    Uses dynamic programming to optimize the solution for both internal
+    and external topics.
+    """
+    #NOTE: ask the user to assign a cost of fixing each topic --> use this in an
+    #algorithm to solve it (backtracking/ DP/ greedy)
+
+    #STEP 1: rank all of the topics for E, S, G for both internal and external
+    #OR use the priority that they have already been assigned
+    #Figure out which one is more accurate here
+    #Probably ranking
+    pass
+
+
 
 def next_question() -> bool:
     """
@@ -268,15 +358,5 @@ def next_question() -> bool:
     """
     pass
 
-def end_program() -> bool:
-    """
-    Ends the program if there are:
-    (1) Only 3 topics left per E, S, G
-    (2) Only ___ of topics left
-    """
-    pass
 
-
-
-    #Ends the program if there are only 3 topics left for every
 

@@ -35,17 +35,14 @@ def question(id):
             title, question = ext_tracker.next_question()
             return render_template("question.html", environment=e, social=s, governance=g, next=id, question=question, title=title)
         else:
+            #TODO: Change this and feed it into the update function
             e = request.form.getlist("e")
             s = request.form.getlist("s")
             g = request.form.getlist("g")
-            print("E: ", e)
-            print("S: ", s)
-            print("G: ", g)
             id += 1
 
-            #TODO: the questions are currently not being moved forward (stuck on Q.1)
-            #ext_tracker.update()
-            title, question = ext_tracker.next_question()
+            title, question = ext_tracker.update(e, s, g)
+            e, s, g = ext_tracker.get_topics()
             return render_template("question.html", environment=e, social=s, governance=g, next=id, question=question, title=title)
     #else:
         #Keep working on this part here

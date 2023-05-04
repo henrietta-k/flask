@@ -11,6 +11,7 @@ questions_ext = [("Scale of Negative Impact", "How grave is its negative impact?
                  ("Scope of Positive Impact", "What is the scope of the potential positive impact?"),
                  ("Likelihood", "What is the likelihood of the potential positive impact?")]
 
+#NOTE: might not need this anymore
 bounds_ext = [0, 0, 0, 0, 0, 0, 0, 0]
 
 questions_int = []
