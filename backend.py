@@ -226,8 +226,6 @@ class Tracker:
     def remove_topics(self):
         """
         Removes topics based on a bound as user answers questions about them.
-
-        Returns():
         """
 
         #TODO: see if there is an algorithm that can make this work (right now
@@ -244,20 +242,47 @@ class Tracker:
                  (self.s_curr_heap, self.s_heap, self.s),
                  (self.g_curr_heap, self.g_heap, self.g)]
 
-        to_delete = [] #TODO: figure out whether I need this or not
+        result = []
 
         for curr_heap, heap, category in heaps:
             for i, topic_tuple in enumerate(curr_heap):
+                #print("i: ", i, "i + 1: ", i + 1, "Length of heap: ", len(curr_heap), curr_heap)
+                to_delete= []
                 if i < len(curr_heap) - 1: #figur ethis out
                     cost_prev, prev = topic_tuple
                     cost_next, next = curr_heap[i+1]
+                    print("Diff: ", cost_next - cost_prev, "Remainign: ", questions_remaining, "PRev: ", prev, "Next: ", next)
                     if cost_next - cost_prev > questions_remaining:
-                        _, delete_topic = curr_heap.pop(i)
-                        delete_topic = category[delete_topic]
+                        print("I'm here now")
+                        to_delete.append(prev)
+                        print("To delete:", to_delete)
                         if self.ext:
-                            heapq.heappush(heap, (delete_topic.external, delete_topic))
+                            heapq.heappush(heap, (category[prev].external, prev))
                         else:
-                            heapq.heappush(heap, (delete_topic.internal, delete_topic))
+                            heapq.heappush(heap, (category[prev].internal, prev))
+                #print("Tod delete: ", to_delete)
+                self.delete_topic(curr_heap, to_delete)
+                to_delete = []
+
+
+    def delete_topic(self, heap, topics):
+        """
+        Helper function for remove_topics(). Deletes all the specified topics
+        in a heap.
+
+        Inputs:
+            heap(lst of tuples):
+            topics(lst of str):
+
+        Returns: (does not return a value)
+        """
+        #TODO: change this to a quickselect algorithm
+        #TODO: test this function
+        for topic in topics:
+            for i, topic_tuple in enumerate(heap):
+                _, name = topic_tuple
+                if topic == name:
+                    heap.pop(i)
 
 
     def no_questions_remaining(self):
@@ -336,26 +361,27 @@ class Tracker:
         #TODO
         return False
 
+
 def merge_solutions(self, int_tracker, ext_tracker):
     """
     Uses dynamic programming to optimize the solution for both internal
     and external topics.
+
+    Make several rankings:
+    (1) Greedy solution for terminating early / some sort of backtracking algorithm
+    (2) Ranking by priority (code some sort of search algorithm for this)
+    (3) Use DP to calculate the costs of a topic given user input
     """
     #NOTE: ask the user to assign a cost of fixing each topic --> use this in an
-    #algorithm to solve it (backtracking/ DP/ greedy)
+    #algorithm to solve it (backtracking/ DP/ greedy) --> use DP for this by
+    #initializing an array
+
+
 
     #STEP 1: rank all of the topics for E, S, G for both internal and external
     #OR use the priority that they have already been assigned
     #Figure out which one is more accurate here
     #Probably ranking
-    pass
-
-
-
-def next_question() -> bool:
-    """
-    Checks to see if there is another question after the current question.
-    """
     pass
 
 
