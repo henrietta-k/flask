@@ -14,47 +14,22 @@
 
 
       <!--Results-->
-    <div class="card-group">
+      <div class="card-group">
 
-        <!--Environmental topics-->
+        <!--Generating a card for every result-->
+        {% for result in results %}
         <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Environment</h5>
-            {% for topic in topics %}
-                <li>
-                    {{ topic }}
-                </li>
-            {% endfor %}
-            </form>
+            <div class="card-body">
+              <h5 class="card-title">Results by ___</h5> <!--Figure out how to state the way of ranking these topics-->
+              {% for topic in topics %}
+                  <li>
+                      {{ topic }}
+                  </li>
+              {% endfor %}
+              </form>
+            </div>
           </div>
-        </div>
-
-        <!--Social topics-->
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Social</h5>
-            {% for topic in topics %}
-                <li>
-                    {{ topic }}
-                </li>
-            {% endfor %}
-            </form>
-          </div>
-        </div>
-
-        <!--Governance topics-->
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Governance</h5>
-            {% for topic in topics %}
-                <li>
-                    {{ topic }}
-                </li>
-            {% endfor %}
-            </form>
-          </div>
-        </div>
-      </div>
+          {% endfor %}
 
       <!--Restart the program-->
       <div>

@@ -244,6 +244,8 @@ class Tracker:
 
         result = []
 
+        #TODO: rewrite this function using a quickselect algorithm
+
         for curr_heap, heap, category in heaps:
             for i, topic_tuple in enumerate(curr_heap):
                 #print("i: ", i, "i + 1: ", i + 1, "Length of heap: ", len(curr_heap), curr_heap)
@@ -285,27 +287,6 @@ class Tracker:
                     heap.pop(i)
 
 
-    def no_questions_remaining(self):
-        """
-        #TODO: is this method actually used or not
-        Pushes all material topics into the heap when there are no more
-        questions left to ask.
-
-        Input:
-            ext(bool): whether this Tracker is for
-
-        Returns: (does not return a value)
-        """
-
-        for category, heap in self.categories:
-            if category:
-                for topic in category.values():
-                    if self.ext:
-                        heap.heappush(topic.external, topic)
-                    else:
-                        heap.heappush(topic.internal, topic)
-
-
     def next_question(self) -> tuple:
         """
         NOTE: heaps look like this
@@ -339,16 +320,35 @@ class Tracker:
                        abs(max_e - max_g), abs(max_s - max_g))
 
         if min_diff > questions_remaining:
+            self.no_questions_remaining()
             return False
 
         #Only one topic left in E, S, G
         if (self.e_curr_heap <= 1 and self.s_curr_heap <= 1
                 and self.g_curr_heap <= 1):
+            self.no_questions_remaining()
             return False
 
         if questions_remaining > 0  and not self.terminate():
             question = self.questions[self.curr_id]
             return question
+
+
+    def no_questions_remaining(self):
+        """
+        Pushes all material topics into the heap when there are no more
+        questions left to ask.
+
+        Returns: (does not return a value)
+        """
+
+        for category, heap in self.categories:
+            if category:
+                for topic in category.values():
+                    if self.ext:
+                        heapq.heappush(heap, (topic.external, topic))
+                    else:
+                        heapq.heappush(heap, (topic.internal, topic))
 
 
     def terminate(self):
@@ -360,29 +360,3 @@ class Tracker:
         """
         #TODO
         return False
-
-
-def merge_solutions(self, int_tracker, ext_tracker):
-    """
-    Uses dynamic programming to optimize the solution for both internal
-    and external topics.
-
-    Make several rankings:
-    (1) Greedy solution for terminating early / some sort of backtracking algorithm
-    (2) Ranking by priority (code some sort of search algorithm for this)
-    (3) Use DP to calculate the costs of a topic given user input
-    """
-    #NOTE: ask the user to assign a cost of fixing each topic --> use this in an
-    #algorithm to solve it (backtracking/ DP/ greedy) --> use DP for this by
-    #initializing an array
-
-
-
-    #STEP 1: rank all of the topics for E, S, G for both internal and external
-    #OR use the priority that they have already been assigned
-    #Figure out which one is more accurate here
-    #Probably ranking
-    pass
-
-
-

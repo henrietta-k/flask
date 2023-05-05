@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template
 from utils import *
 from backend import *
+from results import *
 
 app = Flask(__name__)
 
@@ -9,7 +10,7 @@ app = Flask(__name__)
 def index():
     return render_template("start.html")
 
-#Check to see whether the user has input at least 5 topics or not
+#TODO: [maybe] Check to see whether the user has input at least 5 topics or not
 @app.route('/topics')
 def topics():
     return render_template("topics.html")
@@ -19,13 +20,11 @@ def topics():
 ext_tracker = Tracker()
 int_tracker = Tracker(False)
 
-
 #For each subsequent question
-#Next step: change each column to 3 checkboxes each with low, medium, high
 @app.route('/question/<int:id>', methods=["POST"])
 def question(id):
     #Figure out how to turn this into internal and external tracker
-    if ext_tracker.next_question():
+    if ext_tracker.next_question(): #TODO: figure out which function to call here, it's either update or next_question
         if id == 1:
             e = request.form.get("e")
             s = request.form.get("s")
@@ -48,13 +47,15 @@ def question(id):
         #Keep working on this part here
         #return render_template("results.html")
 
-#######################
-#GREEDY ALGORITHM HERE#
-#######################
+@app.route("/choose-result", methods=["POST"]) #or is it get?
+def choose_result():
+    return render_template("choose_result.html")
+    #Then make a form that redirects to the results page
 
 #Results of program shown to the user
-@app.route("/results")
+@app.route("/results", methods=["POST"])
 def results():
-    topics = ["1", "2", "3"]
-    return render_template("results.html", topics=topics)
+    choices = request.form.get("choices")
+    results = compile_results(int_tracker, ext_tracker, choices)
+    return render_template("results.html", results=results)
 
