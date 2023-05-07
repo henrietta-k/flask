@@ -4,7 +4,6 @@ Generating results for the program
 
 from backend import *
 
-def compile_results(int_tracker, ext_tracker, choices):
     """
     Uses dynamic programming to optimize the solution for both internal
     and external topics.
@@ -12,16 +11,14 @@ def compile_results(int_tracker, ext_tracker, choices):
     Inputs:
         int_tracker(Tracker): internal Tracker
         ext_tracker(Tracker): external Tracker
-        choices(list of ints): asks the user how they would like their results
-            organized and gives them a ranking of materiality topics
-            based on their input
 
     Make several rankings:
     (1) Greedy solution for terminating early / some sort of backtracking algorithm
         - OR don't do this and when a user decides to terminate early, just call the merge_ranking function
     (2) Ranking by priority (code some sort of search algorithm for this)
     (3) Use DP to calculate the costs of a topic given user input
-    """
+
+
     #NOTE: ask the user to assign a cost of fixing each topic --> use this in an
     #algorithm to solve it (backtracking/ DP/ greedy) --> use DP for this by
     #initializing an array
@@ -30,20 +27,7 @@ def compile_results(int_tracker, ext_tracker, choices):
     #OR use the priority that they have already been assigned
     #Figure out which one is more accurate here
     #Probably ranking
-
-    result = []
-
-    for choice in choices:
-        if choice == 1:
-            #TODO: merge costs here
-            pass
-        elif choice == 2:
-            #TODO: merge by ranking
-            pass
-        else:
-            #TODO: merge by _____
-            pass
-
+    """
 
 def merge_costs(int_tracker, ext_tracker, e, s, g):
     """
@@ -80,7 +64,6 @@ def merge_ranking(int_tracker, ext_tracker):
     """
 
     #TODO: test this function
-
     assert type(int_tracker) == Tracker
     assert type(ext_tracker) == Tracker
 
@@ -103,8 +86,7 @@ def merge_ranking(int_tracker, ext_tracker):
 def __get_ranking(tracker):
     """
     Helper function that assigns a ranking to a topic based on their position
-    in a heap. If topics have the same score, they will be assigned the same
-    ranking. Need to do this because scores are not comparable across the two
+    in a heap. Need to do this because scores are not comparable across the two
     Tracker objects.
 
     Inputs:
@@ -114,16 +96,22 @@ def __get_ranking(tracker):
         E, S, G
     """
 
+    #TODO: test this function
     heaps = [tracker.e_heap, tracker.s_heap, tracker.g_heap]
+    result = [{}, {}, {}]
 
-    for heap in heaps:
-        #heappop()
-        #TODO: figure out how to rank the topics if they have the same priority
-        pass #TODO: keep working from here
+    for i, heap in enumerate(heaps):
+        heap = heap[::-1]
+        for rank, topic in enumerate(heap):
+            _, name = topic
+            result[i][name] = rank
+    return result
 
 
 def __get_costs(tracker, e, s, g):
     """
+    #TODO: maybe change this so that topics are given an associated cost
+    #NOTE: maybe delete this function if it's not going to be used
     Gets the user input for the costs of the different topics. Helper function
     for merge_costs.
 

@@ -65,9 +65,13 @@ class Tracker:
         self.g_heap = []
 
         #Current question being asked
-        self.curr_id = 0
+        self.curr_id = 1
+
+        #Checks if the user still wants the program to run
+        self.terminate = False
 
         #Use these in For loops
+        #TODO: add curr_heap to these and use them in more functions for better code quality
         self.categories = [(self.e, self.e_heap),
                            (self.s, self.s_heap),
                            (self.g, self.g_heap)]
@@ -195,25 +199,23 @@ class Tracker:
         bound.
 
         Inputs:
-            e(list of str):
-            s(list of str):
-            g(list of str):
+            e(list of str): list of E topics the user chose
+            s(list of str): list of S topics the user chose
+            g(list of str): list of G topics the user chose
 
         Returns: (does not return a value)
         """
 
         inputs = [(self.e, e),
-                (self.s, s),
-                (self.g, g)]
+                  (self.s, s),
+                  (self.g, g)]
 
         #When answering questions about the external impact
         if self.ext:
             for esg_dict, category in inputs:
                 for topic in category:
                     esg_dict[topic].external += 1
-                    #print("Topic name: ", topic, "Score: ", esg_dict[topic].external)
             self.update_heap()
-            #print("E heap: ", self.e_curr_heap, "S: ", self.s_curr_heap, "G: ", self.g_curr_heap)
 
         #When answering questions about the internal impact
         else:
@@ -226,51 +228,32 @@ class Tracker:
     def remove_topics(self):
         """
         Removes topics based on a bound as user answers questions about them.
+        Topics are removed if the difference between one topic's score and the
+        next topic's score is larger than the number of questions remaining.
         """
-
-        #TODO: see if there is an algorithm that can make this work (right now
-        # it's not really working)
-
-
-        #Total external questions: 8
         questions_remaining = len(self.questions) - self.curr_id
 
-        #Topics removed if the difference between one topic's score and the
-        #score of the one before it is larger than the number of questions
-        #remaining
         heaps = [(self.e_curr_heap, self.e_heap, self.e),
                  (self.s_curr_heap, self.s_heap, self.s),
                  (self.g_curr_heap, self.g_heap, self.g)]
 
-        result = []
-
-        #TODO: rewrite this function using a quickselect algorithm
-
-        for curr_heap, heap, category in heaps:
+        to_delete = []
+        for curr_heap, heap, _ in heaps:
             for i, topic_tuple in enumerate(curr_heap):
-                #print("i: ", i, "i + 1: ", i + 1, "Length of heap: ", len(curr_heap), curr_heap)
-                to_delete= []
-                if i < len(curr_heap) - 1: #figur ethis out
-                    cost_prev, prev = topic_tuple
-                    cost_next, next = curr_heap[i+1]
-                    print("Diff: ", cost_next - cost_prev, "Remainign: ", questions_remaining, "PRev: ", prev, "Next: ", next)
+                if i < len(curr_heap) - 1:
+                    cost_prev = topic_tuple[0]
+                    cost_next = curr_heap[i+1][0]
                     if cost_next - cost_prev > questions_remaining:
-                        print("I'm here now")
-                        to_delete.append(prev)
-                        print("To delete:", to_delete)
-                        if self.ext:
-                            heapq.heappush(heap, (category[prev].external, prev))
-                        else:
-                            heapq.heappush(heap, (category[prev].internal, prev))
-                #print("Tod delete: ", to_delete)
-                self.delete_topic(curr_heap, to_delete)
-                to_delete = []
+                        to_delete.append(topic_tuple)
+            self.delete_topics(curr_heap, heap, to_delete)
+            to_delete = []
 
 
-    def delete_topic(self, heap, topics):
+    def delete_topics(self, old_heap, new_heap, topics):
         """
         Helper function for remove_topics(). Deletes all the specified topics
-        in a heap.
+        in a heap and pushes it into the heap when the topics aren't being
+        asked about anymore.
 
         Inputs:
             heap(lst of tuples):
@@ -278,40 +261,31 @@ class Tracker:
 
         Returns: (does not return a value)
         """
-        #TODO: change this to a quickselect algorithm
-        #TODO: test this function
         for topic in topics:
-            for i, topic_tuple in enumerate(heap):
-                _, name = topic_tuple
-                if topic == name:
-                    heap.pop(i)
+            old_heap.remove(topic)
+            heapq.heappush(new_heap, topic)
 
 
     def next_question(self) -> tuple:
         """
-        NOTE: heaps look like this
-        E heap:  [(2, 'b'), (3, 'a'), (3, 'c')] S:  [(2, 'e'), (3, 'd'), (3, 'f')] G:  [(2, 'h'), (3, 'g'), (2, 'i')]
-
         Checks to see if any more questions need to be asked and returns a question
         if there are any remaining. Returns False otherwise.
 
-        NOTE: figure out HOW to terminate the program --> maybe difference in scores of the topics
-        are all smaller than the number of questions remaining
         Reasons for termination
-        (1) No more topics
-        (2)
-        (3)
-
-        Inputs:
+        (1) There are no more questions to ask
+        (2) The highest scoring topics across E, S, G all have a difference
+            greater than the number of questions remaining
+        (3) Only one topic left for E, S, G
 
         Returns(tuple of str or False): tuple of the question title and the
             question itself if there are questions remaining. False otherwise.
         """
         #TODO: write a pytest for this function
         questions_remaining = len(self.questions) - self.curr_id
+        print("Questions remaining: ", questions_remaining,
+              "all questions: ", len(self.questions),
+              "Self curr_id", self.curr_id, )
 
-        #Terminate the program if the highest scores in every current heap
-        #are greater than the number of questions remaining
         max_e = self.e_curr_heap[-1][0]
         max_s = self.s_curr_heap[-1][0]
         max_g = self.g_curr_heap[-1][0]
@@ -324,12 +298,12 @@ class Tracker:
             return False
 
         #Only one topic left in E, S, G
-        if (self.e_curr_heap <= 1 and self.s_curr_heap <= 1
-                and self.g_curr_heap <= 1):
+        if (len(self.e_curr_heap) <= 1 and len(self.s_curr_heap) <= 1
+                and len(self.g_curr_heap) <= 1):
             self.no_questions_remaining()
             return False
 
-        if questions_remaining > 0  and not self.terminate():
+        if questions_remaining > 0  and not self.terminate:
             question = self.questions[self.curr_id]
             return question
 
@@ -346,17 +320,7 @@ class Tracker:
             if category:
                 for topic in category.values():
                     if self.ext:
-                        heapq.heappush(heap, (topic.external, topic))
+                        heapq.heappush(heap, (topic.external, topic.name))
                     else:
-                        heapq.heappush(heap, (topic.internal, topic))
+                        heapq.heappush(heap, (topic.internal, topic.name))
 
-
-    def terminate(self):
-        """
-        Uses a greedy algorithm to rank the topics currently if the user decides
-        to end the program early.
-
-        Inputs:
-        """
-        #TODO
-        return False

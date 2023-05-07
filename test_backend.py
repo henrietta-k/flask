@@ -47,10 +47,9 @@ def test_remove_topics():
 
     curr.remove_topics()
 
-    #TODO: this is not really working properly 
-    assert curr.e_curr_heap == "Hello"
+    assert curr.e_curr_heap == [(8, 'c')]
     assert curr.s_curr_heap == [(2, 'd'), (4, 'e'), (5, 'f')]
-    assert curr.g_curr_heap == "Hello"
+    assert curr.g_curr_heap == [(8, 'i')]
 
 def test_update_topics():
     pass
