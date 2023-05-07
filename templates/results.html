@@ -3,41 +3,88 @@
 </head>
 
 <body>
-
-    <!--Results displayed-->
-    <div class="jumbotron">
-        <h1 class="display-4">Results</h1>
-        <p class="lead">Material topics ranked from highest to lowest priority</p>
-        <p class="lead">
-        </p>
+    <!--Results-->
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+          <h1 class="display-4">Results</h1>
+          <p class="lead">Here are the results of your Materiality Assessment Program.
+          </p>
+        </div>
       </div>
 
+      <!--Ranking by cost and benefits to the company-->
+      <div class="card">
+        <div class="card-header">
+          Result #1
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Rank by Cost</h5>
+          {% for topic in total%}
+          <p class="card-text">
+            <li>{{ topic }}</li>
+        </p>
+        {% endfor %}
+        </div>
+      </div>
 
-      <!--Results-->
+      <div class="card">
+        <div class="card-header">
+          Result #2
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Rank by Priority</h5>
+
       <div class="card-group">
-
-        <!--Generating a card for every result-->
-        {% for result in results %}
+        <!--Environmental topics-->
         <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Results by ___</h5> <!--Figure out how to state the way of ranking these topics-->
-              {% for topic in topics %}
-                  <li>
-                      {{ topic }}
-                  </li>
+              <h5 class="card-title">Environment</h5>
+              {% for topic in environment %}
+              <div class="form-group row">
+                <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm"> {{ topic }} </label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control form-control-sm" id="colFormLabelSm" placeholder="score" name="e_cost">
+                </div>
+              </div>
               {% endfor %}
-              </form>
+            </div>
+        </div>
+
+          <!--Social topics-->
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Social</h5>
+              {% for topic in social %}
+              <div class="form-group row">
+                <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm"> {{ topic }} </label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control form-control-sm" id="colFormLabelSm" placeholder="score" name="e_cost">
+                </div>
+              </div>
+              {% endfor %}
             </div>
           </div>
-          {% endfor %}
 
-      <!--Restart the program-->
-      <div>
-        <br></br>
+          <!--Governance topics-->
+        <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Governance</h5>
+              {% for topic in governance %}
+              <div class="form-group row">
+                <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm"> {{ topic }} </label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control form-control-sm" id="colFormLabelSm" placeholder="score" name="e_cost">
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+        </div>
     </div>
-      <a class="btn btn-primary" href="/start" role="button">Restart</a>
+        </div>
+      </div>
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
+

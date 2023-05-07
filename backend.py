@@ -26,6 +26,7 @@ class Topic:
         self.name = name
         self.external = 0
         self.internal = 0
+        self.cost = None
 
 
 class Tracker:
@@ -54,10 +55,8 @@ class Tracker:
 
         if ext:
             self.questions = questions_ext
-            self.bounds = bounds_ext
         else:
             self.questions = questions_int
-            self.bounds = bounds_int
 
         #When topics are no longer being asked about
         self.e_heap = []
@@ -104,9 +103,28 @@ class Tracker:
                 #Topic needs to be a str for this function to work
                 heapq.heappush(esg_heap, (0, topic))
 
-        #Heap looks like this:
-        #Curr heap:  [(0, 'a'), (0, 'b'), (0, 'c')]
         return (list(self.e.keys()), list(self.s.keys()), list(self.g.keys()))
+
+
+    def assign_costs(self, e, s, g):
+        """
+        Assigns a cost to every Topic object based on user input.
+
+        Inputs:
+            e(lst of ints): costs of all individual environmental topics
+            s(lst of ints): costs of all individual social topics
+            g(lst of ints): costs of all individual governance topics
+        """
+        #print("Inputs E: ", e, "S: ", s, "G: ", g)
+        categories = [(list(self.e.values()), e),
+                      (list(self.s.values()), s),
+                      (list(self.g.values()), g)]
+
+        print("Self values: ", self.e.values(), self.s.values(), self.g.values())
+
+        for costs, input in categories:
+            for i, topic in enumerate(costs):
+                topic.cost = input[i]
 
 
     def update_heap(self):

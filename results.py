@@ -4,43 +4,16 @@ Generating results for the program
 
 from backend import *
 
+def merge_costs(int_tracker, ext_tracker, max):
     """
-    Uses dynamic programming to optimize the solution for both internal
-    and external topics.
-
-    Inputs:
-        int_tracker(Tracker): internal Tracker
-        ext_tracker(Tracker): external Tracker
-
-    Make several rankings:
-    (1) Greedy solution for terminating early / some sort of backtracking algorithm
-        - OR don't do this and when a user decides to terminate early, just call the merge_ranking function
-    (2) Ranking by priority (code some sort of search algorithm for this)
-    (3) Use DP to calculate the costs of a topic given user input
-
-
-    #NOTE: ask the user to assign a cost of fixing each topic --> use this in an
-    #algorithm to solve it (backtracking/ DP/ greedy) --> use DP for this by
-    #initializing an array
-
-    #STEP 1: rank all of the topics for E, S, G for both internal and external
-    #OR use the priority that they have already been assigned
-    #Figure out which one is more accurate here
-    #Probably ranking
-    """
-
-def merge_costs(int_tracker, ext_tracker, e, s, g):
-    """
-    Merges all the topics based on their ranking and their assigned costs.
+    Uses dynamic programing
 
     NOTE: figure out which Tracker object the costs are aligned with
 
     Inputs:
         int_tracker(Tracker): internal tracker
         ext_tracker(Tracker): external tracker
-        e(lst of ints): costs of all E topics
-        s(lst of ints): costs of all S topics
-        g(lst of ints): costs of all G topics
+        max(int): max number of topics the company wants to rank
 
     Returns (tuple of lst of str): all the topics in E, S, G ranked based on
         their ranking and costs
@@ -48,6 +21,8 @@ def merge_costs(int_tracker, ext_tracker, e, s, g):
     e_cost, s_cost, g_cost = __get_costs(ext_tracker, e, s, g)
     #TODO: get the ranking of each topic now
     #TODO: merge them using DP
+
+    #NOTE: make a new page before results that asks the user how many topics they want to see in their program
 
 
 def merge_ranking(int_tracker, ext_tracker):
@@ -110,8 +85,7 @@ def __get_ranking(tracker):
 
 def __get_costs(tracker, e, s, g):
     """
-    #TODO: maybe change this so that topics are given an associated cost
-    #NOTE: maybe delete this function if it's not going to be used
+    #TODO: THIS FUNCTION CAN BE DELETED 
     Gets the user input for the costs of the different topics. Helper function
     for merge_costs.
 

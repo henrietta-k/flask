@@ -10,7 +10,7 @@
         </li>
     </ul>
 
-    <!--Instructions-->
+    <!--Cost instructions-->
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
           <h1 class="display-4">Costs</h1>
@@ -21,52 +21,77 @@
       </div>
 
       <!--Moving onto the next question after-->
-      <div class="card-group">
-        <form action="/question/1" method="POST">
-      <div class="card-group">
-
-        <!--Environmental topics-->
-        <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Environment</h5>
-              {% for topic in environment %}
-              <div class="form-group row">
-                <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm"> {{ topic }} </label>
-                <div class="col-sm-10">
-                  <input type="text" class="form-control form-control-sm" id="colFormLabelSm" placeholder="score" name="e_cost">
+      <form action="/question/1" method="POST">
+        <div class="card-group">
+            <!--Environmental topics-->
+            <div class="card">
+                <div class="card-body">
+                <h5 class="card-title">Environment</h5>
+                {% for topic in environment %}
+                <div class="form-group row">
+                    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm"> {{ topic }} </label>
+                    <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-sm" id="colFormLabelSm" placeholder="score" name="e_cost">
+                    </div>
                 </div>
-              </div>
-              {% endfor %}
+                {% endfor %}
+                </div>
+            </div>
+
+            <!--Social topics-->
+            <div class="card">
+                <div class="card-body">
+                <h5 class="card-title">Social</h5>
+                {% for topic in social %}
+                <div class="form-group row">
+                    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm"> {{ topic }} </label>
+                    <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-sm" id="colFormLabelSm" placeholder="score" name="s_cost">
+                    </div>
+                </div>
+                {% endfor %}
+                </div>
+            </div>
+
+            <!--Governance topics-->
+            <div class="card">
+                <div class="card-body">
+                <h5 class="card-title">Governance</h5>
+                {% for topic in governance %}
+                    <div class="form-group row">
+                    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm"> {{ topic }} </label>
+                    <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-sm" id="colFormLabelSm" placeholder="score" name="g_cost">
+                    </div>
+                    </div>
+                {% endfor %}
+                </div>
             </div>
         </div>
+    </br>
+</br>
 
-          <!--Social topics-->
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Social</h5>
-              {% for topic in social %}
-              <div class="form-group row">
-                <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm"> {{ topic }} </label>
-                <div class="col-sm-10">
-                  <input type="text" class="form-control form-control-sm" id="colFormLabelSm" placeholder="score" name="s_cost">
-                </div>
-               </div>
-            {% endfor %}
-            </div>
-          </div>
-
-          <!--Governance topics-->
+    <!--Getting max number of topics-->
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+          <h1 class="display-4">Max Topics</h1>
+          <p class="lead">Please select how many Material topics you would like to
+            see at the end of the assessment.
+          </p>
+        </div>
+      </div>
+    <div class="card-group">
         <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Governance</h5>
-              {% for topic in governance %}
-                <div class="form-group row">
-                <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm"> {{ topic }} </label>
-                <div class="col-sm-10">
-                  <input type="text" class="form-control form-control-sm" id="colFormLabelSm" placeholder="score" name="g_cost">
-                </div>
-                </div>
-              {% endfor %}
+            <h5 class="card-title">Number of Topics</h5>
+            {% for number in total %}
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value={{number}} id="defaultCheck1" name="max">
+              <label class="form-check-label" for="defaultCheck1">
+                {{ number }}
+              </label>
+            </div>
+            {% endfor %}
             </div>
         </div>
     </div>
