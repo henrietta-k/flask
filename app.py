@@ -26,6 +26,7 @@ int_id = 1
 #For each subsequent question
 @app.route('/question/<int:id>', methods=["POST"])
 def question(id):
+    #TODO: problem is that the next_question here is not matching up wtih what is being fed into teh program
     print("Here is the next question: ", ext_tracker.next_question())
     print("Curr heaps: ", ext_tracker.e_curr_heap, ext_tracker.s_curr_heap, ext_tracker.g_curr_heap)
     if ext_tracker.next_question():
