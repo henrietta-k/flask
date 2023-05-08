@@ -15,7 +15,7 @@ questions_ext = [None,
                  ("Likelihood", "What is the likelihood of the potential positive impact?")]
 
 questions_int = [None,
-                 ("Purpose", "• The organization’s purpose, value or mission statements, business model, and strategies."),
+                 ("Purpose", "The organization’s purpose, value or mission statements, business model, and strategies."),
                  ("Types of Activities", "The types of activities it carries out (e.g., sales, marketing, manufacturing, distribution) and the geographic locations of these activities."),
                  ("Products & Services", "The types of products and services it offers and the markets it serves (i.e., the types of customers and beneficiaries targeted, and the geographic locations where products and services are offered)."),
                  ("Sectors", "The sectors in which the organization is active and their characteristics (e.g., whether they involve informal work, whether they are labor or resource intensive)."),

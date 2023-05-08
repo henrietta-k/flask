@@ -19,17 +19,11 @@ def topics():
 ext_tracker = Tracker()
 int_tracker = Tracker(False)
 
-#Keeping track of the question id for the internal tracker
-#TODO: fix this part
-int_id = 1
-
 #For each subsequent question
+#TODO: fix the code quality here --> use if statements for ext and int
 @app.route('/question/<int:id>', methods=["POST"])
 def question(id):
-    #TODO: problem is that the next_question here is not matching up wtih what is being fed into teh program
-    print("Here is the next question: ", ext_tracker.next_question())
-    print("Curr heaps: ", ext_tracker.e_curr_heap, ext_tracker.s_curr_heap, ext_tracker.g_curr_heap)
-    if ext_tracker.next_question():
+    if ext_tracker.next:
         if id == 1:
             #Initializing object costs
             e_costs = request.form.getlist("e_cost")
@@ -44,43 +38,40 @@ def question(id):
             #Getting the Topics
             e, s, g = ext_tracker.get_topics()
             id += 1
-            print("Compare to the next question: ", ext_tracker.next_question())
             title, question = ext_tracker.next_question()
             return render_template("question.html", environment=e, social=s, governance=g, next=id, question=question, title=title)
         else:
-            #print("I'm here now")
             e = request.form.getlist("e")
             s = request.form.getlist("s")
             g = request.form.getlist("g")
             id += 1
+            ext_tracker.update(e, s, g)
 
-            title, question = ext_tracker.update(e, s, g)
-            print("Compare to the next question: ", ext_tracker.next_question())
-            title, question = ext_tracker.next_question()
-            e, s, g = ext_tracker.get_topics()
-            return render_template("question.html", environment=e, social=s, governance=g, next=id, question=question, title=title)
+            if ext_tracker.next_question():
+                title, question = ext_tracker.next_question()
+                e, s, g = ext_tracker.get_topics()
+                return render_template("question.html", environment=e, social=s, governance=g, next=id, question=question, title=title)
+            else:
+                e, s, g = int_tracker.initialize(list(ext_tracker.e.keys()),
+                                                 list(ext_tracker.s.keys()),
+                                                 list(ext_tracker.g.keys()))
+                title, question = int_tracker.next_question()
+                return render_template("question.html", environment=e, social=s, governance=g, next=id, question=question, title=title)
+    elif int_tracker.next:
+        e = request.form.getlist("e")
+        s = request.form.getlist("s")
+        g = request.form.getlist("g")
+        id += 1
+        int_tracker.update(e, s, g)
 
-    elif int_tracker.next_question():
-        if int_id == 1:
-            e = request.form.get("e")
-            s = request.form.get("s")
-            g = request.form.get("g")
-            e, s, g = int_tracker.initialize(e, s, g) #Figure out how to differentiate these two trackers
-            int_id += 1
+        if int_tracker.next_question():
             title, question = int_tracker.next_question()
-            return render_template("question.html", environment=e, social=s, governance=g, next=int_id, question=question, title=title)
-        else:
-            e = request.form.getlist("e")
-            s = request.form.getlist("s")
-            g = request.form.getlist("g")
-            int_id += 1
-
-            title, question = int_tracker.update(e, s, g)
             e, s, g = int_tracker.get_topics()
-            return render_template("question.html", environment=e, social=s, governance=g, next=int_id, question=question, title=title)
-    else:
-        #TODO: figure out how to get to this point --> code keeps breaking somewhere here
-        return render_template("pre-result.html")
+            return render_template("question.html", environment=e, social=s, governance=g, next=id, question=question, title=title)
+        else:
+            #TODO: keep working on this
+            
+            return render_template("results.html")
 
 
 @app.route("/get-costs", methods=["POST"])

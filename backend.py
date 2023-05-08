@@ -75,6 +75,9 @@ class Tracker:
                            (self.s, self.s_heap),
                            (self.g, self.g_heap)]
 
+        #Checks to see if there is a next question
+        self.next = True
+
 
     def initialize(self, e, s, g):
         """
@@ -82,15 +85,16 @@ class Tracker:
         attributes for this class.
 
         Inputs:
-            e(list of str): all Environmental topics
-            s(list of str): all Social topics
-            g(list of str): all Governmental topics
+            e(list of str or str): all Environmental topics
+            s(list of str or str): all Social topics
+            g(list of str or str): all Governmental topics
 
         Returns: (does not return a value)
         """
-        e = e.split(",")
-        s = s.split(",")
-        g = g.split(",")
+        if type(e) == str:
+            e = e.split(",")
+            s = s.split(",")
+            g = g.split(",")
 
         categories = [(e, self.e, self.e_curr_heap, "E"),
                       (s, self.s, self.s_curr_heap, "S"),
@@ -141,29 +145,21 @@ class Tracker:
 
         #TODO: tidy the function here --> fix code quality
         #Remaking the heap with the new values
-        if self.ext:
-            for esg_dict, heap, char in heaps:
-                new_heap = []
-                for _, topic in heap:
+        for esg_dict, heap, char in heaps:
+            new_heap = []
+            for _, topic in heap:
+                if self.ext:
                     priority = esg_dict[topic].external
-                    heapq.heappush(new_heap, (priority, topic))
-                if char == "E":
-                    self.e_curr_heap = new_heap
-                elif char == "S":
-                    self.s_curr_heap = new_heap
                 else:
-                    self.g_curr_heap = new_heap
-                new_heap = []
-
-        #TODO: paste the code from above and tweak it
-        else:
-            for esg_dict, heap in heaps:
-                new_heap = []
-                for _, topic in heap:
                     priority = esg_dict[topic].internal
-                    heapq.heappush(new_heap, (priority, topic))
-                heap = new_heap
-                new_heap = []
+                heapq.heappush(new_heap, (priority, topic))
+            if char == "E":
+                self.e_curr_heap = new_heap
+            elif char == "S":
+                self.s_curr_heap = new_heap
+            else:
+                self.g_curr_heap = new_heap
+            new_heap = []
 
 
     def update(self, e, s, g):
@@ -176,6 +172,7 @@ class Tracker:
             s(list of str): all Social topics the user selected
             g(list of str): all Governmental topics the user selected
 
+        #TODO: Edited this
         Returns(str or None): str of the next question or None if there are
         no more questions to ask
         """
@@ -183,10 +180,8 @@ class Tracker:
 
         self.update_topics(e, s, g)
         self.remove_topics()
-        if self.next_question():
-            self.curr_id += 1
-            return self.next_question()
-        return None
+        self.curr_id += 1
+        #return self.next_question()
 
 
     def get_topics(self):
@@ -251,6 +246,8 @@ class Tracker:
         Topics are removed if the difference between one topic's score and the
         next topic's score is larger than the number of questions remaining.
         """
+        #TODO: if there is only one topic remaining for each category, delete it
+        #TODO: update this in the no_questions_remaining function as well
         questions_remaining = len(self.questions) - self.curr_id
 
         heaps = [(self.e_curr_heap, self.e_heap, self.e),
@@ -289,7 +286,7 @@ class Tracker:
     def next_question(self) -> tuple:
         """
         Checks to see if any more questions need to be asked and returns a question
-        if there are any remaining. Returns False otherwise.
+        if there are any remaining. Returns None otherwise.
 
         Reasons for termination
         (1) There are no more questions to ask
@@ -297,7 +294,7 @@ class Tracker:
             greater than the number of questions remaining
         (3) Only one topic left for E, S, G
 
-        Returns(tuple of str or False): tuple of the question title and the
+        Returns(tuple of str or None): tuple of the question title and the
             question itself if there are questions remaining. False otherwise.
         """
         #TODO: write a pytest for this function
@@ -313,13 +310,15 @@ class Tracker:
 
         if min_diff > questions_remaining:
             self.no_questions_remaining()
-            return False
+            self.next = False
+            return None
 
         #Only one topic left in E, S, G
         if (len(self.e_curr_heap) <= 1 and len(self.s_curr_heap) <= 1
                 and len(self.g_curr_heap) <= 1):
             self.no_questions_remaining()
-            return False
+            self.next = False
+            return None
 
         if questions_remaining > 0:
             question = self.questions[self.curr_id]
