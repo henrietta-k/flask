@@ -4,7 +4,7 @@ Generating results for the program
 
 from backend import *
 
-def merge_costs(int_tracker, ext_tracker, max):
+def merge_costs(int_tracker, ext_tracker):
     """
     Uses dynamic programing
 

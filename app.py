@@ -90,7 +90,6 @@ def get_costs():
 def result():
     #Getting the calculated results
     results_by_cost = ["a", "b", "c"]#merge_costs(int_tracker, ext_tracker)
-    print("Results by cost: ", results_by_cost)
     results_by_rank = merge_ranking(int_tracker, ext_tracker)
 
     #Results for each of the categories
