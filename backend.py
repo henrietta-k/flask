@@ -120,7 +120,8 @@ class Tracker:
                       (list(self.s.values()), s),
                       (list(self.g.values()), g)]
 
-        print("Self values: ", self.e.values(), self.s.values(), self.g.values())
+        #print("Self values: ", self.e.values(), self.s.values(), self.g.values())
+        #print("Inputs: ", e, s, g)
 
         for costs, input in categories:
             for i, topic in enumerate(costs):
@@ -178,6 +179,7 @@ class Tracker:
         Returns(str or None): str of the next question or None if there are
         no more questions to ask
         """
+        #print("updating now")
 
         self.update_topics(e, s, g)
         self.remove_topics()
@@ -300,9 +302,7 @@ class Tracker:
         """
         #TODO: write a pytest for this function
         questions_remaining = len(self.questions) - self.curr_id
-        print("Questions remaining: ", questions_remaining,
-              "all questions: ", len(self.questions),
-              "Self curr_id", self.curr_id, )
+        #print("Questions remaining: ", questions_remaining, "all questions: ", len(self.questions), "Self curr_id", self.curr_id, )
 
         max_e = self.e_curr_heap[-1][0]
         max_s = self.s_curr_heap[-1][0]
@@ -321,7 +321,7 @@ class Tracker:
             self.no_questions_remaining()
             return False
 
-        if questions_remaining > 0  and not self.terminate:
+        if questions_remaining > 0:
             question = self.questions[self.curr_id]
             return question
 

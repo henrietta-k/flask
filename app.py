@@ -27,6 +27,7 @@ int_id = 1
 @app.route('/question/<int:id>', methods=["POST"])
 def question(id):
     print("Here is the next question: ", ext_tracker.next_question())
+    print("Curr heaps: ", ext_tracker.e_curr_heap, ext_tracker.s_curr_heap, ext_tracker.g_curr_heap)
     if ext_tracker.next_question():
         if id == 1:
             #Initializing object costs
@@ -42,16 +43,19 @@ def question(id):
             #Getting the Topics
             e, s, g = ext_tracker.get_topics()
             id += 1
+            print("Compare to the next question: ", ext_tracker.next_question())
             title, question = ext_tracker.next_question()
             return render_template("question.html", environment=e, social=s, governance=g, next=id, question=question, title=title)
         else:
-            print("I'm here now")
+            #print("I'm here now")
             e = request.form.getlist("e")
             s = request.form.getlist("s")
             g = request.form.getlist("g")
             id += 1
 
             title, question = ext_tracker.update(e, s, g)
+            print("Compare to the next question: ", ext_tracker.next_question())
+            title, question = ext_tracker.next_question()
             e, s, g = ext_tracker.get_topics()
             return render_template("question.html", environment=e, social=s, governance=g, next=id, question=question, title=title)
 
