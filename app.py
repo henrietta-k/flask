@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect
 from utils import *
 from backend import *
 from results import *
@@ -69,16 +69,7 @@ def question(id):
             e, s, g = int_tracker.get_topics()
             return render_template("question.html", environment=e, social=s, governance=g, next=id, question=question, title=title)
         else:
-            #TODO: keep working on this
-                #Getting the calculated results
-            results_by_cost = ["a", "b", "c"]#merge_costs(int_tracker, ext_tracker)
-            results_by_rank = [["a", "b", "c"], ["d", "e", "f"], ["g", "h", "i"]]#merge_ranking(int_tracker, ext_tracker)
-
-            #Results for each of the categories
-            e, s, g = results_by_rank
-
-            #Final results will be displayed
-            return render_template("results.html", total=results_by_cost, environment=e, social=s, governance=g)
+            return redirect("/results")
 
 
 @app.route("/get-costs", methods=["POST"])
@@ -95,11 +86,11 @@ def get_costs():
 
     return render_template("costs.html", environment=e, social=s, governance=g, total=total)
 
-#TODO: fix this later
-@app.route("/results", methods=["POST"])
+@app.route("/results", methods=["GET"])
 def result():
     #Getting the calculated results
-    results_by_cost = merge_costs(int_tracker, ext_tracker, max)
+    results_by_cost = ["a", "b", "c"]#merge_costs(int_tracker, ext_tracker)
+    print("Results by cost: ", results_by_cost)
     results_by_rank = merge_ranking(int_tracker, ext_tracker)
 
     #Results for each of the categories

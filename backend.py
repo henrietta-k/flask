@@ -24,8 +24,7 @@ class Topic:
         """
         self.esg = esg
         self.name = name
-        self.external = 0
-        self.internal = 0
+        self.score = 0
         self.cost = None
 
 
@@ -146,10 +145,7 @@ class Tracker:
         for esg_dict, heap, char in heaps:
             new_heap = []
             for _, topic in heap:
-                if self.ext:
-                    priority = esg_dict[topic].external
-                else:
-                    priority = esg_dict[topic].internal
+                priority = esg_dict[topic].score
                 heapq.heappush(new_heap, (priority, topic))
             if char == "E":
                 self.e_curr_heap = new_heap
@@ -223,10 +219,7 @@ class Tracker:
 
         for esg_dict, category in inputs:
             for topic in category:
-                if self.ext:
-                    esg_dict[topic].external += 1
-                else:
-                    esg_dict[topic].internal += 1
+                esg_dict[topic].score += 1
         self.update_heap()
 
 
@@ -321,8 +314,6 @@ class Tracker:
         for category, heap in self.categories:
             if category:
                 for topic in category.values():
-                    if self.ext:
-                        heapq.heappush(heap, (topic.external, topic.name))
-                    else:
-                        heapq.heappush(heap, (topic.internal, topic.name))
+                    heapq.heappush(heap, (topic.score, topic.name))
+
 
