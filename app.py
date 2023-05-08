@@ -31,9 +31,8 @@ def question(id):
             g_costs = request.form.getlist("g_cost")
             ext_tracker.assign_costs(e_costs, s_costs, g_costs)
 
-            #TODO: see if this works and store it somewhere
-            #NOTE: either put it in a Tracker object or somehow get it to the results page
-            max = request.form.getlist("max")
+            #Max number of topics the user wants to see at the end
+            ext_tracker.max = request.form.getlist("max")
 
             #Getting the Topics
             e, s, g = ext_tracker.get_topics()
@@ -52,6 +51,7 @@ def question(id):
                 e, s, g = ext_tracker.get_topics()
                 return render_template("question.html", environment=e, social=s, governance=g, next=id, question=question, title=title)
             else:
+                ext_tracker.next = False
                 e, s, g = int_tracker.initialize(list(ext_tracker.e.keys()),
                                                  list(ext_tracker.s.keys()),
                                                  list(ext_tracker.g.keys()))
@@ -70,8 +70,15 @@ def question(id):
             return render_template("question.html", environment=e, social=s, governance=g, next=id, question=question, title=title)
         else:
             #TODO: keep working on this
-            
-            return render_template("results.html")
+                #Getting the calculated results
+            results_by_cost = ["a", "b", "c"]#merge_costs(int_tracker, ext_tracker)
+            results_by_rank = [["a", "b", "c"], ["d", "e", "f"], ["g", "h", "i"]]#merge_ranking(int_tracker, ext_tracker)
+
+            #Results for each of the categories
+            e, s, g = results_by_rank
+
+            #Final results will be displayed
+            return render_template("results.html", total=results_by_cost, environment=e, social=s, governance=g)
 
 
 @app.route("/get-costs", methods=["POST"])

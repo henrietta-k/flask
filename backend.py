@@ -78,6 +78,8 @@ class Tracker:
         #Checks to see if there is a next question
         self.next = True
 
+        self.max = None
+
 
     def initialize(self, e, s, g):
         """
@@ -119,13 +121,9 @@ class Tracker:
             s(lst of ints): costs of all individual social topics
             g(lst of ints): costs of all individual governance topics
         """
-        #print("Inputs E: ", e, "S: ", s, "G: ", g)
         categories = [(list(self.e.values()), e),
                       (list(self.s.values()), s),
                       (list(self.g.values()), g)]
-
-        #print("Self values: ", self.e.values(), self.s.values(), self.g.values())
-        #print("Inputs: ", e, s, g)
 
         for costs, input in categories:
             for i, topic in enumerate(costs):
@@ -176,12 +174,10 @@ class Tracker:
         Returns(str or None): str of the next question or None if there are
         no more questions to ask
         """
-        #print("updating now")
 
         self.update_topics(e, s, g)
         self.remove_topics()
         self.curr_id += 1
-        #return self.next_question()
 
 
     def get_topics(self):
@@ -258,9 +254,9 @@ class Tracker:
         for curr_heap, heap, _ in heaps:
             for i, topic_tuple in enumerate(curr_heap):
                 if i < len(curr_heap) - 1:
-                    cost_prev = topic_tuple[0]
+                    cost_curr = topic_tuple[0]
                     cost_next = curr_heap[i+1][0]
-                    if cost_next - cost_prev > questions_remaining:
+                    if cost_next - cost_curr > questions_remaining:
                         to_delete.append(topic_tuple)
             self.delete_topics(curr_heap, heap, to_delete)
             to_delete = []
@@ -299,7 +295,6 @@ class Tracker:
         """
         #TODO: write a pytest for this function
         questions_remaining = len(self.questions) - self.curr_id
-        #print("Questions remaining: ", questions_remaining, "all questions: ", len(self.questions), "Self curr_id", self.curr_id, )
 
         max_e = self.e_curr_heap[-1][0]
         max_s = self.s_curr_heap[-1][0]
@@ -310,14 +305,12 @@ class Tracker:
 
         if min_diff > questions_remaining:
             self.no_questions_remaining()
-            self.next = False
             return None
 
         #Only one topic left in E, S, G
         if (len(self.e_curr_heap) <= 1 and len(self.s_curr_heap) <= 1
                 and len(self.g_curr_heap) <= 1):
             self.no_questions_remaining()
-            self.next = False
             return None
 
         if questions_remaining > 0:

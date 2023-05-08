@@ -13,16 +13,15 @@ def merge_costs(int_tracker, ext_tracker, max):
     Inputs:
         int_tracker(Tracker): internal tracker
         ext_tracker(Tracker): external tracker
-        max(int): max number of topics the company wants to rank
 
     Returns (tuple of lst of str): all the topics in E, S, G ranked based on
         their ranking and costs
     """
-    e_cost, s_cost, g_cost = __get_costs(ext_tracker, e, s, g)
     #TODO: get the ranking of each topic now
     #TODO: merge them using DP
 
-    #NOTE: make a new page before results that asks the user how many topics they want to see in their program
+    max = ext_tracker.max
+
 
 
 def merge_ranking(int_tracker, ext_tracker):
@@ -85,7 +84,7 @@ def __get_ranking(tracker):
 
 def __get_costs(tracker, e, s, g):
     """
-    #TODO: THIS FUNCTION CAN BE DELETED 
+    #TODO: THIS FUNCTION CAN BE DELETED
     Gets the user input for the costs of the different topics. Helper function
     for merge_costs.
 
