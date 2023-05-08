@@ -221,19 +221,13 @@ class Tracker:
                   (self.s, s),
                   (self.g, g)]
 
-        #When answering questions about the external impact
-        if self.ext:
-            for esg_dict, category in inputs:
-                for topic in category:
+        for esg_dict, category in inputs:
+            for topic in category:
+                if self.ext:
                     esg_dict[topic].external += 1
-            self.update_heap()
-
-        #When answering questions about the internal impact
-        else:
-            for esg_dict, category in inputs:
-                for topic in category:
+                else:
                     esg_dict[topic].internal += 1
-            self.update_heap()
+        self.update_heap()
 
 
     def remove_topics(self):
@@ -242,9 +236,7 @@ class Tracker:
         Topics are removed if the difference between one topic's score and the
         next topic's score is larger than the number of questions remaining.
         """
-        #TODO: if there is only one topic remaining for each category, delete it
-        #TODO: update this in the no_questions_remaining function as well
-        questions_remaining = len(self.questions) - self.curr_id
+        questions_remaining = len(self.questions) - 1 - self.curr_id
 
         heaps = [(self.e_curr_heap, self.e_heap, self.e),
                  (self.s_curr_heap, self.s_heap, self.s),
@@ -254,9 +246,9 @@ class Tracker:
         for curr_heap, heap, _ in heaps:
             for i, topic_tuple in enumerate(curr_heap):
                 if i < len(curr_heap) - 1:
-                    cost_curr = topic_tuple[0]
+                    cost_prev = topic_tuple[0]
                     cost_next = curr_heap[i+1][0]
-                    if cost_next - cost_curr > questions_remaining:
+                    if cost_next - cost_prev > questions_remaining:
                         to_delete.append(topic_tuple)
             self.delete_topics(curr_heap, heap, to_delete)
             to_delete = []
@@ -294,7 +286,7 @@ class Tracker:
             question itself if there are questions remaining. False otherwise.
         """
         #TODO: write a pytest for this function
-        questions_remaining = len(self.questions) - self.curr_id
+        questions_remaining = len(self.questions) - 1 - self.curr_id
 
         max_e = self.e_curr_heap[-1][0]
         max_s = self.s_curr_heap[-1][0]

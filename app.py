@@ -98,9 +98,6 @@ def get_costs():
 #TODO: fix this later
 @app.route("/results", methods=["POST"])
 def result():
-    #Max number of topics the user wants to see
-    max = request.form.get("max")
-
     #Getting the calculated results
     results_by_cost = merge_costs(int_tracker, ext_tracker, max)
     results_by_rank = merge_ranking(int_tracker, ext_tracker)

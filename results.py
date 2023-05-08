@@ -38,6 +38,7 @@ def merge_ranking(int_tracker, ext_tracker):
     """
 
     #TODO: test this function
+    #TODO: fix code quality of this function 
     assert type(int_tracker) == Tracker
     assert type(ext_tracker) == Tracker
 
