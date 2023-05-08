@@ -68,12 +68,6 @@ class Tracker:
         #Checks if the user still wants the program to run
         self.terminate = False
 
-        #Use these in For loops
-        #TODO: add curr_heap to these and use them in more functions for better code quality
-        self.categories = [(self.e, self.e_heap),
-                           (self.s, self.s_heap),
-                           (self.g, self.g_heap)]
-
         #Checks to see if there is a next question
         self.next = True
 
@@ -279,6 +273,7 @@ class Tracker:
             question itself if there are questions remaining. False otherwise.
         """
         #TODO: write a pytest for this function
+        #TODO: fix code quality of this function --> make it tidier somehow
         questions_remaining = len(self.questions) - 1 - self.curr_id
 
         max_e = self.e_curr_heap[-1][0]
@@ -302,6 +297,9 @@ class Tracker:
             question = self.questions[self.curr_id]
             return question
 
+        self.no_questions_remaining()
+        return None
+
 
     def no_questions_remaining(self):
         """
@@ -311,9 +309,14 @@ class Tracker:
         Returns: (does not return a value)
         """
 
-        for category, heap in self.categories:
+        categories = [(self.e_curr_heap, self.e_heap),
+                      (self.s_curr_heap, self.s_heap),
+                      (self.g_curr_heap, self.g_heap)]
+
+        for category, heap in categories:
             if category:
-                for topic in category.values():
-                    heapq.heappush(heap, (topic.score, topic.name))
+                for score, topic in category:
+                    heapq.heappush(heap, (score, topic))
+        #print("all the heaps now: ", self.e_heap, self.s_heap, self.g_heap)
 
 

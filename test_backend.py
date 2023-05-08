@@ -3,6 +3,7 @@ Pytests for backend.py
 """
 
 from backend import *
+from results import *
 
 #Source: https://www.amd.com/en/corporate-responsibility/material-esg-issues
 input = ["Energy efficiency of products, GHG reduction solutions",
@@ -50,4 +51,10 @@ def test_remove_topics():
     assert curr_ext.e_curr_heap == [(8, 'c')]
     assert curr_ext.s_curr_heap == [(2, 'd'), (4, 'e'), (5, 'f')]
     assert curr_ext.g_curr_heap == [(8, 'i')]
+
+def test_get_rankings():
+    curr_ext.no_questions_remaining()
+    assert get_ranking(curr_ext) == [{'c': 1, 'b': 2, 'a': 3},
+                                     {'f': 1, 'e': 2, 'd': 3},
+                                     {'i': 1, 'h': 2, 'g': 3}]
 
