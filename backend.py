@@ -114,9 +114,9 @@ class Tracker:
             s(lst of ints): costs of all individual social topics
             g(lst of ints): costs of all individual governance topics
         """
-        categories = [(list(self.e.values()), e),
-                      (list(self.s.values()), s),
-                      (list(self.g.values()), g)]
+        categories = [(list(self.e.keys()), e),
+                      (list(self.s.keys()), s),
+                      (list(self.g.keys()), g)]
 
         for costs, input in categories:
             for i, topic in enumerate(costs):

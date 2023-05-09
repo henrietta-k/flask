@@ -32,7 +32,8 @@ def question(id):
             ext_tracker.assign_costs(e_costs, s_costs, g_costs)
 
             #Max number of topics the user wants to see at the end
-            ext_tracker.max = request.form.getlist("max")
+            ext_tracker.max = int(request.form.getlist("max")[0])
+            print("Max: ", ext_tracker.max, "Type: ", type(ext_tracker.max))
 
             #Getting the Topics
             e, s, g = ext_tracker.get_topics()
@@ -89,7 +90,7 @@ def get_costs():
 @app.route("/results", methods=["GET"])
 def result():
     #Getting the calculated results
-    results_by_cost = ["a", "b", "c"]#merge_costs(int_tracker, ext_tracker)
+    results_by_cost = merge_costs(ext_tracker)
     results_by_rank = merge_ranking(int_tracker, ext_tracker)
 
     #Results for each of the categories

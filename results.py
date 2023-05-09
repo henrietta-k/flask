@@ -6,60 +6,37 @@ from backend import *
 
 all_ranks = {}
 
-def merge_costs(int_tracker, ext_tracker):
+def merge_costs(ext_tracker):
     """
-    Uses dynamic programing to figure out which Material topics to prioritize.
+    Shows the top Material topics to prioritize taking its account its rank and
+    its cost. Number of topics shown is specified by what the user input at
+    the beginning.
 
     Inputs:
-        int_tracker(Tracker): internal tracker
-        ext_tracker(Tracker): external tracker
+        ext_tracker(Tracker): external tracker with costs of Topics and the max
+            number of topics the user wants to see
 
-    Returns (tuple of lst of str): tuple of two separate results
-    (1) Most valuable material topics under a certain cost to the company
-        (Dynamic Programming)
-    (2) Max number of material topics as specific by the user (Greedy)
+    Returns (lst of str): the
     """
 
     #Max number of topics the user wants to rank
     max_topics = ext_tracker.max
-    max_cost = 50 #TODO: get user input for this
 
+    #Storing the value of every topic in all_values
     values = []
-    costs = []
-    #ext_tracker.costs TODO:check to see if the costs have been correctly assigned
+    all_costs = ext_tracker.costs
+    print("All costs: ", all_costs)
 
-    #Total number of topics
-    total_q = len(ext_tracker.e) + len(ext_tracker.s) + len(ext_tracker.g)
-    worst_score = 2 * total_q
-
+    #Value of a topic is its rank + its cost
     for topic, score in all_ranks.items():
-        #Value of a Topic is determined by its rank and its cost
-        values.append(topic, abs(worst_score - score))
-        costs.append(topic, ext_tracker.costs[topic])
+        value = all_costs[topic] + score
+        heapq.heappush(values, (value, topic))
 
-    array = []
-
-    #Initializing an empty array to store values
-    #TODO: change this to list comprehension
-    for i in range(len(values) + 1):
-        temp_row = []
-        for j in range(max_cost + 1):
-            temp_row.append(None)
-        array.append(temp_row)
-        temp_row = []
-
-    #Looping through the array and assigning values
-    for row, line in enumerate(array):
-        for col, _ in enumerate(line):
-            if row == 0 or col == 0:
-                array[row][col] = 0
-            elif costs[row-1] <= row:
-                array[row][col] = max(values[row-1] +
-                                      array[row-1][col-costs[row-1]],
-                                      array[row-1][col])
-            else:
-                array[row][col] = array[row-1][col]
-    print(array[-1][-1])
+    print("Values of all topics: ", values)
+    #TODO: this part is not producing anything yet
+    #TODO: enumerate the html template
+    result = [topic[1] for topic in heapq.nsmallest(max_topics, values)]
+    return result
 
 
 def merge_ranking(int_tracker, ext_tracker):
@@ -83,8 +60,8 @@ def merge_ranking(int_tracker, ext_tracker):
     result = [[], [], []]
 
     #TODO: make functions private later
-    int_rankings = get_ranking(int_tracker)
-    ext_rankings = get_ranking(ext_tracker)
+    int_rankings = __get_ranking(int_tracker)
+    ext_rankings = __get_ranking(ext_tracker)
 
     for i, category_dict in enumerate(ext_rankings):
         temp_rankings = []
@@ -96,7 +73,7 @@ def merge_ranking(int_tracker, ext_tracker):
     return result
 
 
-def get_ranking(tracker):
+def __get_ranking(tracker):
     """
     Helper function that assigns a ranking to a topic based on their position
     in a heap. Need to do this because scores are not comparable across the two
