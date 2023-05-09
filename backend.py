@@ -25,7 +25,6 @@ class Topic:
         self.esg = esg
         self.name = name
         self.score = 0
-        self.cost = None
 
 
 class Tracker:
@@ -72,6 +71,7 @@ class Tracker:
         self.next = True
 
         self.max = None
+        self.costs = {}
 
 
     def initialize(self, e, s, g):
@@ -120,7 +120,8 @@ class Tracker:
 
         for costs, input in categories:
             for i, topic in enumerate(costs):
-                topic.cost = input[i]
+                self.costs[topic] = input[i]
+        print("Costs assigned: ", self.costs)
 
 
     def update_heap(self):
