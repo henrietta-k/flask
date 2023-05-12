@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, redirect
+from flask_sqlalchemy import SQLAlchemy
 from utils import *
 from backend import *
 from results import *
