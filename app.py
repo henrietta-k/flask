@@ -6,6 +6,21 @@ from results import *
 
 app = Flask(__name__)
 
+#Configuring a DB to store user information
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:TurtlesandRocks123!@localhost/data'
+db = SQLAlchemy(app)
+
+"""
+#Creating model
+class Topics(db.Model):
+    name = db.Column(db.String(50), nullable=False)
+    category = db.Column(db.Char(), nullable=False) #Char doesn't work here --> need to specify some other name
+    #score = db.Column(db.Integer)
+
+    def __repr__(self):
+        return '<Name %r>' % self.name
+"""
+
 #Landing page
 @app.route('/start')
 def index():
@@ -34,7 +49,6 @@ def question(id):
 
             #Max number of topics the user wants to see at the end
             ext_tracker.max = int(request.form.getlist("max")[0])
-            print("Max: ", ext_tracker.max, "Type: ", type(ext_tracker.max))
 
             #Getting the Topics
             e, s, g = ext_tracker.get_topics()
@@ -91,8 +105,8 @@ def get_costs():
 @app.route("/results", methods=["GET"])
 def result():
     #Getting the calculated results
-    results_by_cost = merge_costs(ext_tracker)
     results_by_rank = merge_ranking(int_tracker, ext_tracker)
+    results_by_cost = merge_costs(ext_tracker)
 
     #Results for each of the categories
     e, s, g = results_by_rank

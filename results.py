@@ -29,11 +29,15 @@ def merge_costs(ext_tracker):
 
     #Value of a topic is its rank + its cost
     for topic, score in all_ranks.items():
-        value = all_costs[topic] + score
+        value = int(all_costs[topic]) + score
+        print(type(all_costs[topic]), type(score))
+        #Score should be an int
+        #all_costs[topic] is a str
         heapq.heappush(values, (value, topic))
 
     print("Values of all topics: ", values)
     #TODO: this part is not producing anything yet
+    #TODO: store this result into the configured database
     #TODO: enumerate the html template
     result = [topic[1] for topic in heapq.nsmallest(max_topics, values)]
     return result
