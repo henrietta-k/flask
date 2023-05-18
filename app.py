@@ -7,19 +7,21 @@ from results import *
 app = Flask(__name__)
 
 #Configuring a DB to store user information
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:TurtlesandRocks123!@localhost/data'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///results.db'
 db = SQLAlchemy(app)
 
-"""
-#Creating model
-class Topics(db.Model):
-    name = db.Column(db.String(50), nullable=False)
-    category = db.Column(db.Char(), nullable=False) #Char doesn't work here --> need to specify some other name
-    #score = db.Column(db.Integer)
+class Results(db.Model):
+    #User ID number
+    id = db.Column(db.Integer, primary_key=True)
+
+    #Their results
+    cost_results = db.Column(db.String)
+    e_results = db.Column(db.String)
+    s_results = db.Column(db.String)
+    g_results = db.Column(db.String)
 
     def __repr__(self):
-        return '<Name %r>' % self.name
-"""
+        return '<Name %r>' % self.id
 
 #Landing page
 @app.route('/start')
@@ -54,7 +56,9 @@ def question(id):
             e, s, g = ext_tracker.get_topics()
             id += 1
             title, question = ext_tracker.next_question()
-            return render_template("question.html", environment=e, social=s, governance=g, next=id, question=question, title=title)
+            return render_template("question.html", environment=e, social=s,
+                                   governance=g, next=id, question=question,
+                                   title=title)
         else:
             e = request.form.getlist("e")
             s = request.form.getlist("s")
@@ -65,14 +69,18 @@ def question(id):
             if ext_tracker.next_question():
                 title, question = ext_tracker.next_question()
                 e, s, g = ext_tracker.get_topics()
-                return render_template("question.html", environment=e, social=s, governance=g, next=id, question=question, title=title)
+                return render_template("question.html", environment=e, social=s,
+                                       governance=g, next=id, question=question,
+                                       title=title)
             else:
                 ext_tracker.next = False
                 e, s, g = int_tracker.initialize(list(ext_tracker.e.keys()),
                                                  list(ext_tracker.s.keys()),
                                                  list(ext_tracker.g.keys()))
                 title, question = int_tracker.next_question()
-                return render_template("question.html", environment=e, social=s, governance=g, next=id, question=question, title=title)
+                return render_template("question.html", environment=e, social=s,
+                                       governance=g, next=id, question=question,
+                                       title=title)
     elif int_tracker.next:
         e = request.form.getlist("e")
         s = request.form.getlist("s")
@@ -83,7 +91,9 @@ def question(id):
         if int_tracker.next_question():
             title, question = int_tracker.next_question()
             e, s, g = int_tracker.get_topics()
-            return render_template("question.html", environment=e, social=s, governance=g, next=id, question=question, title=title)
+            return render_template("question.html", environment=e, social=s,
+                                   governance=g, next=id, question=question,
+                                   title=title)
         else:
             return redirect("/results")
 
@@ -100,7 +110,9 @@ def get_costs():
     total = len(e) + len(s) + len(g)
     total = [i for i in range(1, total + 1)]
 
-    return render_template("costs.html", environment=e, social=s, governance=g, total=total)
+    return render_template("costs.html", environment=e, social=s,
+                           governance=g, total=total)
+
 
 @app.route("/results", methods=["GET"])
 def result():
@@ -111,5 +123,23 @@ def result():
     #Results for each of the categories
     e, s, g = results_by_rank
 
+    #Making a DB from this info
+    new_user = Results(cost_results=", ".join(results_by_cost),
+                       e_results=", ".join(e), s_results=", ".join(s),
+                       g_results=", ".join(g))
+
+    #Push to DB
+    try:
+        db.session.add(new_user)
+        db.session.commit()
+    except:
+        #NOTE: it's going here now for some reason
+        print("There was an error adding to the DB")
+
+    #NOTE: this print statement is for debugging purposes only
+    results = Results.query.order_by(Results.id)
+    print("Results: ", results)
+
     #Final results will be displayed
-    return render_template("results.html", total=results_by_cost, environment=e, social=s, governance=g)
+    return render_template("results.html", total=results_by_cost,
+                           environment=e, social=s, governance=g)
