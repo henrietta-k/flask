@@ -25,21 +25,16 @@ def merge_costs(ext_tracker):
     #Storing the value of every topic in all_values
     values = []
     all_costs = ext_tracker.costs
-    print("All costs: ", all_costs)
 
     #Value of a topic is its rank + its cost
     for topic, score in all_ranks.items():
         value = int(all_costs[topic]) + score
-        print(type(all_costs[topic]), type(score))
-        #Score should be an int
-        #all_costs[topic] is a str
         heapq.heappush(values, (value, topic))
 
-    print("Values of all topics: ", values)
-    #TODO: this part is not producing anything yet
     #TODO: store this result into the configured database
     #TODO: enumerate the html template
-    result = [topic[1] for topic in heapq.nsmallest(max_topics, values)]
+    result = ['{}) {}'.format(i, topic[1]) for i, topic in
+              enumerate(heapq.nsmallest(max_topics, values), 1)]
     return result
 
 
@@ -73,7 +68,8 @@ def merge_ranking(int_tracker, ext_tracker):
             ranking_sum = ranking + int_rankings[i][topic]
             all_ranks[topic] = ranking_sum
             heapq.heappush(temp_rankings, (ranking_sum, topic))
-        result[i] = [topic for _, topic in heapq.nsmallest(len(temp_rankings), temp_rankings)]
+        result[i] = ['{}) {}'.format(i, topic[1]) for i, topic in
+                     enumerate(heapq.nsmallest(len(temp_rankings), temp_rankings), 1)]
     return result
 
 
