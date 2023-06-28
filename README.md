@@ -6,4 +6,4 @@ WHAT THIS PROGRAM IS USED FOR:
 
 >>> from app import app, db
 >>> app.app_context().push()
->>> db.create_all()
+>>> db.create_all()# Materiality-Project-2023
