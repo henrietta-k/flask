@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<head>
+    <title>Results | Materiality Assessment Program</title>
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <style>
+        div.scroll {
+            width: 90%;
+            height: auto;
+            overflow-x: hidden;
+            overflow-y: auto;
+            padding: 20px;
+            margin: auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll">
+        <!--Results-->
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+                <h1 class="display-4">Results</h1>
+                <p class="lead">
+                    Here are the results of your Materiality Assessment Program
+                </p>
+            </div>
+        </div>
+
+        <!--Ranking by cost and benefits to the company-->
+        <div class="card">
+            <div class="card-header">
+                Result #1: these Material topics have been ranked by their cost,
+                impact on the organization, and external impacts. The number of
+                topics displayed is specified by the number you entered at the
+                beginning.
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">
+                    Rank by Cost, Impact on Company, External Impact
+                </h5>
+                {% for topic in total%}
+                <p class="card-text">
+                    {{ topic }}<br>
+                </p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                Result #2: all Material topics ranked by score received.
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Rank by Score</h5>
+                <div class="card-group">
+
+                    <!--Environmental topics-->
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Environment</h5>
+                            {% for topic in environment %}
+                            <p class="card-text">
+                                {{ topic }}<br>
+                            </p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!--Social topics-->
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Social</h5>
+                            {% for topic in social %}
+                            <p class="card-text">
+                                {{ topic }}<br>
+                            </p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!--Governance topics-->
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Governance</h5>
+                            {% for topic in governance %}
+                            <p class="card-text">
+                                {{ topic }}<br>
+                            </p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous">
+    </script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous">
+    </script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous">
+    </script>
+
+</body>
