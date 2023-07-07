@@ -10,5 +10,5 @@ The program also takes in the estimated cost of each topic as well as a limit on
 
 ## Usage
 
-This program was created using Flask and a Python backend. It includes a SQL database to store the user's information. It is currently deployed on PythonAnywhere and can be accessed [here].
+This program was created using Flask and a Python backend. It includes a SQL database to store the user's information. It is currently deployed on PythonAnywhere and can be accessed here(https://materialassessmentprogram.pythonanywhere.com/start).
 
